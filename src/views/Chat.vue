@@ -1,9 +1,9 @@
 <template>
     <div class="chat">
         <h1>ChatPage</h1>
-        <div v-if="isAuthlaized">
-            <!--　Firebase から取得したリストを描画（トランジション付き）　-->
-            <transition-group name="chat" tag="div" class="list content">
+        <div v-if="isAuthorized">
+            <!-- 　Firebase から取得したリストを描画（トランジション付き）　
+            <transition-group name="chat" class="list content">
                 <section v-for="{ key, name, image, message } in chat" :key="key" class="item">
                     <div class="item-image"><img :src="image" width="40" height="40"></div>
                     <div class="item-detail">
@@ -11,12 +11,13 @@
                         <div class="item-message">{{ message }}</div>
                     </div>
                 </section>
-            </transition-group>
+            </transition-group> -->
+            <ChatBalloon v-bind:chat="getChatList"></ChatBalloon>
 
             <!-- 入力フォーム -->
             <form action="" @submit.prevent="doSend" class="form">
-                <textarea v-model="input" :disabled="!user.uid" @keydown.enter.exact.prevent="doSend"></textarea>
-                <button type="submit" :disabled="!user.uid" class="send-button">Send</button>
+                <textarea v-model="input" v-bind:disabled="!user.uid" @keydown.enter.exact.prevent="doSend"></textarea>
+                <button type="submit" v-bind:disabled="!user.uid" class="send-button">Send</button>
             </form>
         </div>
     </div>
@@ -25,16 +26,25 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import Firebase from 'firebase';
+import ChatBalloon from '@/components/ChatBalloon.vue';
 
-@Component
+@Component({
+  components: {
+    ChatBalloon,
+  },
+})
 export default class Chat extends Vue {
-    @Prop() public user: any;
+    @Prop() public user!: Firebase.User;
 
-    private chat: any;
+    private chat!: any[];
     private input: string = '';
 
-    get isAuthlaized(): boolean {
+    private get isAuthorized(): boolean {
         return this.user != null;
+    }
+
+    private get getChatList(): any[] {
+        return this.chat;
     }
 
     private created(): void {
