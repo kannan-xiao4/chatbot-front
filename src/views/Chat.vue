@@ -1,23 +1,24 @@
 <template>
     <div class="chat">
-        <!--　Firebase から取得したリストを描画（トランジション付き）　-->
-        <transition-group name="chat" tag="div" class="list content">
-            <section v-for="{ key, name, image, message } in chat" :key="key" class="item">
-                <div class="item-image"><img :src="image" width="40" height="40"></div>
-                <div class="item-detail">
-                    <div class="item-name">{{ name }}</div>
-                    <div class="item-message">
-                        <nl2br tag="div" :text="message"/>
+        <h1>ChatPage</h1>
+        <div v-if="isAuthlaized">
+            <!--　Firebase から取得したリストを描画（トランジション付き）　-->
+            <transition-group name="chat" tag="div" class="list content">
+                <section v-for="{ key, name, image, message } in chat" :key="key" class="item">
+                    <div class="item-image"><img :src="image" width="40" height="40"></div>
+                    <div class="item-detail">
+                        <div class="item-name">{{ name }}</div>
+                        <div class="item-message">{{ message }}</div>
                     </div>
-                </div>
-            </section>
-        </transition-group>
+                </section>
+            </transition-group>
 
-        <!-- 入力フォーム -->
-        <form action="" @submit.prevent="doSend" class="form">
-            <textarea v-model="input" :disabled="!user.uid" @keydown.enter.exact.prevent="doSend"></textarea>
-            <button type="submit" :disabled="!user.uid" class="send-button">Send</button>
-        </form>
+            <!-- 入力フォーム -->
+            <form action="" @submit.prevent="doSend" class="form">
+                <textarea v-model="input" :disabled="!user.uid" @keydown.enter.exact.prevent="doSend"></textarea>
+                <button type="submit" :disabled="!user.uid" class="send-button">Send</button>
+            </form>
+        </div>
     </div>
 </template>
 
@@ -27,13 +28,17 @@ import Firebase from 'firebase';
 
 @Component
 export default class Chat extends Vue {
-    public user: any;
-    public chat: any;
-    public input: string = '';
+    @Prop() public user: any;
 
-    public created(): void {
+    private chat: any;
+    private input: string = '';
+
+    get isAuthlaized(): boolean {
+        return this.user != null;
+    }
+
+    private created(): void {
         Firebase.auth().onAuthStateChanged((user) => {
-            this.user = user ? user : {};
             const REF_MESSAGE = Firebase.database().ref('message');
             if (user) {
                 this.chat = [];
