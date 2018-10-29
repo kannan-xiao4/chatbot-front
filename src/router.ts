@@ -3,6 +3,9 @@ import Router from 'vue-router';
 import Home from '@/views/Home.vue';
 import About from '@/views/About.vue';
 import Login from '@/views/Login.vue';
+import Chat from '@/views/Chat.vue';
+
+import FirebaseBase from '@/components/FirebaseBase.vue';
 
 Vue.use(Router);
 
@@ -21,9 +24,20 @@ export default new Router({
       component: About,
     },
     {
-      path: '/login',
-      name: 'login',
-      component: Login,
+      path: '/chat',
+      component: FirebaseBase,
+      children: [
+        {
+          path: '/',
+          name: 'Chat Page',
+          component: Chat,
+        },
+        {
+          path: 'login',
+          name: 'Chat Login',
+          component: Login,
+        },
+      ],
     },
   ],
 });

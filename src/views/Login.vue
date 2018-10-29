@@ -17,17 +17,10 @@ import Firebase from 'firebase';
 
 @Component
 export default class Login extends Vue {
-
-    public user: any = null;
+    @Prop() public user: any;
 
     get isAuthlaized(): boolean {
         return this.user != null;
-    }
-
-    public created(): void {
-        Firebase.auth().onAuthStateChanged((user) => {
-            this.user = user ? user : {};
-        });
     }
 
     public doLogin(): void {
