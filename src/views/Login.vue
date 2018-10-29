@@ -1,12 +1,14 @@
 <template>
     <div class="login">
-        <h1>Chat</h1>
+        <h1>ChatLogin</h1>
         <div v-if="isAuthlaized">
-            [{{ user.displayName }}]
-            <button type="button" @click="doLogout">ログアウト</button>
+            [{{ user != null ? user.email : 'null' }}]
+            <button v-on:click="doLogout">ログアウト</button>
         </div>
         <div v-else key="logout">
-            <button type="button" @click="doLogin">ログイン</button>
+            <input type="text" placeholder="email" v-model="email">
+            <input type="password" placeholder="Password" v-model="password">
+            <button v-on:click="doLogin">ログイン</button>
         </div>
     </div>
 </template>
@@ -19,16 +21,22 @@ import Firebase from 'firebase';
 export default class Login extends Vue {
     @Prop() public user: any;
 
+    private email: string = '';
+    private password: string = '';
+
     get isAuthlaized(): boolean {
         return this.user != null;
     }
 
-    public doLogin(): void {
-        const provider = new Firebase.auth.TwitterAuthProvider();
-        Firebase.auth().signInWithPopup(provider);
+    private doLogin(): void {
+        Firebase.auth().signInWithEmailAndPassword(this.email, this.password).then((res) => {
+            alert('sucess login!');
+        }, (err) => {
+            alert(err.message);
+        });
     }
 
-    public doLogout(): void {
+    private doLogout(): void {
         Firebase.auth().signOut();
     }
 }

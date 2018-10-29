@@ -1,7 +1,7 @@
 <template>
     <div class="firebasebase">
         <main>
-            <router-view v-bind:data="user"></router-view>
+            <router-view v-bind:user="getUser"></router-view>
         </main>
     </div>
 </template>
@@ -12,11 +12,15 @@ import Firebase from 'firebase';
 
 @Component
 export default class FirebaseBase extends Vue {
-    public user: any = null;
+    private user: Firebase.User | null = null;
+
+    get getUser(): Firebase.User | null {
+        return this.user;
+    }
 
     private created(): void {
         Firebase.auth().onAuthStateChanged((user) => {
-            this.user = user ? user : null;
+            this.user = user != null ? user : null;
         });
     }
 }
