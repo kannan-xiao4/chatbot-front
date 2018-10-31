@@ -19,7 +19,7 @@ import Firebase from 'firebase';
 
 @Component
 export default class Signup extends Vue {
-    @Prop() public user: any;
+    @Prop() public user!: Firebase.User;
 
     private email: string = '';
     private password: string = '';
