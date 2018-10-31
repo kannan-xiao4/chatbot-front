@@ -2,17 +2,10 @@
     <div class="chat">
         <h1>ChatPage</h1>
         <div v-if="isAuthorized">
-            <!-- 　Firebase から取得したリストを描画（トランジション付き）　
-            <transition-group name="chat" class="list content">
-                <section v-for="{ key, name, image, message } in chat" :key="key" class="item">
-                    <div class="item-image"><img :src="image" width="40" height="40"></div>
-                    <div class="item-detail">
-                        <div class="item-name">{{ name }}</div>
-                        <div class="item-message">{{ message }}</div>
-                    </div>
-                </section>
-            </transition-group> -->
-            <ChatBalloon v-bind:chat="getChatList"></ChatBalloon>
+            <!-- 　Firebase から取得したリストを描画 -->
+            <section v-for="chat in getChatList" v-bind:key="chat.key" class="item">
+                <ChatBalloon v-bind:chat="chat"></ChatBalloon>
+            </section>
 
             <!-- 入力フォーム -->
             <form action="" @submit.prevent="doSend" class="form">
@@ -36,22 +29,21 @@ import ChatBalloon from '@/components/ChatBalloon.vue';
 export default class Chat extends Vue {
     @Prop() public user!: Firebase.User;
 
-    private chat!: any[];
+    private chatlist: any = [];
     private input: string = '';
 
     private get isAuthorized(): boolean {
         return this.user != null;
     }
 
-    private get getChatList(): any[] {
-        return this.chat;
+    private get getChatList(): any {
+        return this.chatlist;
     }
 
-    private created(): void {
+    private mounted(): void {
         Firebase.auth().onAuthStateChanged((user) => {
             const REF_MESSAGE = Firebase.database().ref('message');
             if (user) {
-                this.chat = [];
                 // message に変更があったときのハンドラを登録
                 REF_MESSAGE.limitToLast(10).on('child_added', this.childAdded);
             } else {
@@ -63,7 +55,7 @@ export default class Chat extends Vue {
 
     private childAdded(snap: any) {
         const message = snap.val();
-        this.chat.push({
+        this.chatlist.push({
             key: snap.key,
             name: message.name,
             image: message.image,

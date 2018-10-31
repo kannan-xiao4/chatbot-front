@@ -1,29 +1,18 @@
 <template>
-    <div class="chatballoon" v-if="hasChat">
-        <transition-group name="chat" class="list content">
-            <section v-for="{ key, name, image, message } in chatList" :key="key" class="item">
-                <div class="item-image"><img :src="image" width="40" height="40"></div>
-                <div class="item-detail">
-                    <div class="item-name">{{ name }}</div>
-                    <div class="item-message">{{ message }}</div>
-                </div>
-            </section>
-        </transition-group>
+    <div class="chatballoon">
+        <div class="item-image"><img v-bind:src="chat.image" width="40" height="40"></div>
+        <div class="item-detail">
+            <div class="item-name">{{ chat.name }}</div>
+            <div class="item-message">{{ chat.message }}</div>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 
+@Component
 export default class ChatBalloon extends Vue {
-    @Prop() public chat!: any[];
-
-    private get hasChat(): boolean {
-        return this.chat != null && this.chat.length > 0;
-    }
-
-    private get chatList(): any[] {
-        return this.chat;
-    }
+    @Prop() public chat!: any;
 }
 </script>
