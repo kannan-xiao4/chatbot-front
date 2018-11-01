@@ -16,7 +16,3 @@ import NavHeader from '@/components/NavHeader.vue';
 })
 export default class App extends Vue {}
 </script>
-
-<style>
-    @import "assets/app.css";
-</style>
