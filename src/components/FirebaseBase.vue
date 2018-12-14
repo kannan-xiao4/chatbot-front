@@ -20,7 +20,12 @@ export default class FirebaseBase extends Vue {
 
     private created(): void {
         Firebase.auth().onAuthStateChanged((user) => {
-            this.user = user != null ? user : null;
+            if ( user != null) {
+                user.getIdToken().then((token) => {
+                    localStorage.setItem('jwt', token);
+                    this.user = user;
+                });
+            }
         });
     }
 }
