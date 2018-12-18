@@ -19,6 +19,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import Firebase from 'firebase';
+import Axios from 'axios';
 import ChatBalloon from '@/components/ChatBalloon.vue';
 
 @Component({
@@ -70,14 +71,22 @@ export default class Chat extends Vue {
 
     private doSend(): void {
         if (this.user.uid && this.input.length) {
-            // firebase にメッセージを追加
-            Firebase.database().ref('message').push({
-                message: this.input,
-                name: this.user.displayName,
-                image: this.user.photoURL,
-            }, () => {
-                this.input = ''; // フォームを空にする
+
+            const myHttpClient = Axios.create({
+                baseURL : 'http://localhost:3000',
+                headers : {
+                    'Authorization' : `Bearer ${localStorage.getItem('jwt')}`,
+                    'Content-Type' : 'application/json',
+                },
             });
+
+            myHttpClient.post('/api/chat',
+                {
+                    message: this.input,
+                    name : this.user.displayName,
+                    image : this.user.photoURL,
+                })
+                .then( (res) => this.input = '' );
         }
     }
 }
@@ -105,8 +114,9 @@ export default class Chat extends Vue {
   justify-content: center;
   align-items: center;
   bottom: 0;
+  right: 100px;
   height: 80px;
-  width: 100%;
+  width: 50%;
   background: #f5f5f5;
 }
 .form textarea {
