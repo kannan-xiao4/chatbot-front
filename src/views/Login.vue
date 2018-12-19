@@ -37,7 +37,9 @@ export default class Login extends Vue {
     }
 
     private doLogout(): void {
-        Firebase.auth().signOut();
+        Firebase.auth().signOut().then(() => {
+            localStorage.removeItem('jwt')
+      });
     }
 }
 </script>
