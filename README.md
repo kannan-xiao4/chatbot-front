@@ -5,27 +5,6 @@
 npm install
 ```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-
 ## そもそものProject準備(2018.10.13現在)
 nodeとnpmがインストール済み
 
@@ -65,3 +44,15 @@ $ npm run serve
 ```
 `http://localhost:8080/` or `http://hostpcip:8080/`
 で確認
+
+
+## FirebaseのEnv設定
+.env.local を下記の形式でプロジェクトディレクトリ直下に配置する
+```
+VUE_APP_FIRE_BASE_API_KEY=AAAAAAAAAAAAAAAAAAAAAAAAAAA
+VUE_APP_AUTH_DOMAIN=sample-project.firebaseapp.com
+VUE_APP_DATABASE_URL=https://sample-project.firebaseio.com
+VUE_APP_PROJECT_ID=sample-project
+VUE_APP_STORAGE_BUCKET=sample-project.appspot.com
+VUE_APP_MESSAGING_SENDER_ID=123456789000
+```
