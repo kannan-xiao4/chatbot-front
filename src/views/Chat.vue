@@ -21,6 +21,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator';
 import Firebase from 'firebase';
 import Axios from 'axios';
 import ChatBalloon from '@/components/ChatBalloon.vue';
+import ApiClient from '@/script/ApiClient';
 
 @Component({
   components: {
@@ -71,16 +72,7 @@ export default class Chat extends Vue {
 
     private doSend(): void {
         if (this.user.uid && this.input.length) {
-
-            const myHttpClient = Axios.create({
-                baseURL : 'http://localhost:3000',
-                headers : {
-                    'Authorization' : `Bearer ${localStorage.getItem('jwt')}`,
-                    'Content-Type' : 'application/json',
-                },
-            });
-
-            myHttpClient.post('/api/chat',
+            ApiClient.Post('/api/chat',
                 {
                     message: this.input,
                     name : this.user.displayName,

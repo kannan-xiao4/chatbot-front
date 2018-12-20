@@ -16,6 +16,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import Firebase from 'firebase';
+import ApiClient from '@/script/ApiClient';
 
 @Component
 export default class Signup extends Vue {
@@ -31,7 +32,13 @@ export default class Signup extends Vue {
     private signup(): void {
         Firebase.auth().createUserWithEmailAndPassword(this.email, this.password).then((user) => {
             const name = user.user == null ? null : user.user.email;
-            alert('Create account: ' + name);
+            const uuid = user.credential == null ? null : user.credential.providerId;
+
+            ApiClient.Post('/user/register',
+            {
+                uuid: uuid,
+                name: name
+            }).then( (res) => alert('Create account: ' + name) );
         }).catch((error) => {
             alert(error.message);
         });
